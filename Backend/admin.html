@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Webshop Admin</title>
+  <style>
+    :root{--bg:#f7f7f5;--panel:#fff;--panel2:#fafafa;--ink:#121212;--muted:#6f6f6f;--line:#e5e5e2;--brand:#111;--brand2:#f59e0b;--bad:#dc2626;--ok:#16833a;--soft:#f0f2ef}
+    *{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--ink);font-size:14px}button,input,select,textarea{font:inherit}button{cursor:pointer}
+    .hidden{display:none!important}.login{max-width:440px;margin:10vh auto}.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px}.muted{color:var(--muted)}.grid{display:grid;gap:14px}.cards{grid-template-columns:repeat(6,minmax(0,1fr))}.cols{grid-template-columns:280px 1fr}.two{grid-template-columns:1fr 1fr}.stack{display:grid;gap:10px}.split{display:flex;align-items:center;justify-content:space-between;gap:10px}.scroll{overflow:auto}
+    .app-shell{min-height:100vh;display:grid;grid-template-columns:260px 1fr}.statusbar{grid-column:1/-1;height:32px;background:#111;color:#f5f5f5;display:flex;align-items:center;justify-content:center;gap:28px;font-size:12px}.statusbar span{white-space:nowrap}.sidebar{grid-row:2;position:sticky;top:0;height:calc(100vh - 32px);background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column;padding:18px}.brand{font-family:Georgia,serif;font-size:30px;line-height:1;margin:0 0 28px}.brand small{display:block;font-family:Inter,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;text-align:center;margin-top:4px;color:#777}.nav{display:grid;gap:8px}.nav button{border:0;background:transparent;color:#333;border-radius:6px;min-height:42px;padding:10px 12px;text-align:left}.nav button.active{background:#111;color:#fff}.nav button:hover{background:#f0f0ee;color:#111}.nav button.active:hover{background:#111;color:#fff}.sidebar-credit{margin-top:auto;border:1px solid var(--line);border-radius:8px;padding:13px;background:#fff}.sidebar-credit strong{display:block;margin-bottom:6px}
+    .app-main{grid-row:2;min-width:0}.top{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.bar{height:76px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;gap:18px}.page-title{font-size:24px;font-weight:700}.top-actions{display:flex;align-items:center;gap:12px}.search{width:280px;min-height:40px;border:1px solid var(--line);border-radius:8px;padding:9px 12px;background:#fff}.avatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#eee;font-weight:800}.role-badge{background:#111;color:#fff;border-radius:8px;padding:9px 13px;font-weight:800}
+    .shell{padding:22px 28px 92px;max-width:1760px;margin:0 auto}.dashboard-layout{display:grid;grid-template-columns:minmax(0,1fr)320px;gap:18px}.dash-main{display:grid;gap:14px}.quick-card{display:grid;gap:10px}.quick-card .btn{width:100%}.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.metric{min-height:126px}.metric span{display:flex;align-items:center;gap:8px;font-size:13px}.metric strong{display:block;font-size:25px;margin-top:18px;letter-spacing:0}.trend{color:var(--ok);font-size:12px;margin-top:10px}.btn,.nav button{transition:background .12s ease,border-color .12s ease}.btn{border:1px solid var(--line);background:#fff;color:#111;border-radius:7px;min-height:40px;padding:9px 12px}.btn.primary{background:#111;border-color:#111;color:#fff}.btn.warn{background:#fff7ed;border-color:#fed7aa;color:#9a3412}.btn.danger{background:#fee2e2;border-color:#fecaca;color:#991b1b}.btn:disabled{opacity:.55}
+    .input{width:100%;border:1px solid var(--line);background:#fff;color:#111;border-radius:7px;min-height:42px;padding:10px}.field{display:grid;gap:6px}.field span{font-size:12px;font-weight:800;color:var(--muted)}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}.table th{font-size:11px;color:var(--muted);text-transform:uppercase}.pill{display:inline-flex;border-radius:7px;background:#eaf7ee;color:#13783a;padding:5px 8px;font-size:12px;font-weight:800}.section{display:none}.section.active{display:block}.notice{padding:10px;border-radius:8px;background:#eef7f0;color:#176b35}.error{background:#fff1f1;color:#b42318}.mini-list{display:grid;gap:10px}.mini-row{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding:7px 0}.bottom-dock{position:fixed;left:260px;right:0;bottom:0;height:58px;background:rgba(255,255,255,.96);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(6,1fr);gap:10px;padding:8px 28px;z-index:9}.dock-item{font-size:12px;color:#555}.dock-item strong{display:block;color:#111;font-size:13px}
+    .busy{position:relative;pointer-events:none;opacity:.72}.busy:after{content:"";width:16px;height:16px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;display:inline-block;margin-left:8px;vertical-align:-3px;animation:spin .75s linear infinite}.skeleton{position:relative;overflow:hidden;background:linear-gradient(90deg,#f1f1f1,#e6e6e6,#f1f1f1);background-size:220% 100%;animation:shine 1.1s linear infinite;border-radius:8px;min-height:52px}.skeleton.row{height:38px}.skeleton.card{height:96px}@keyframes shine{to{background-position:-220% 0}}@keyframes spin{to{transform:rotate(360deg)}}#globalStatus{position:fixed;left:50%;bottom:72px;transform:translateX(-50%);z-index:20;max-width:min(620px,calc(100vw - 28px));box-shadow:0 12px 30px rgba(0,0,0,.14)}
+    .thumbs{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.thumbs img{width:38px;height:38px;object-fit:cover;border:1px solid var(--line);border-radius:6px;background:#f4f4f2}.product-actions{display:flex;gap:6px;flex-wrap:wrap}.product-name{font-weight:800}.status-archived{background:#f3f4f6;color:#374151}.status-out{background:#fff7ed;color:#9a3412}.status-active{background:#eaf7ee;color:#13783a}
+    @media(max-width:1100px){.app-shell{grid-template-columns:1fr}.statusbar{overflow:auto;justify-content:flex-start;padding:0 14px}.sidebar{position:relative;height:auto;grid-row:auto;padding:12px}.app-main{grid-row:auto}.brand{font-size:24px;margin-bottom:12px}.nav{grid-template-columns:repeat(2,1fr);gap:6px}.nav button{min-height:38px;padding:8px}.dashboard-layout,.cards,.cols,.two{grid-template-columns:1fr}.bar{height:auto;padding:14px;align-items:flex-start;flex-direction:column}.search{width:100%}.top-actions{width:100%;flex-wrap:wrap}.shell{padding:14px 10px 90px}.bottom-dock{left:0;grid-template-columns:repeat(2,1fr);height:auto}.sidebar-credit{margin-top:12px}.panel{padding:12px}.table{min-width:0}.table thead{display:none}.table,.table tbody,.table tr,.table td{display:block;width:100%}.table tr{border:1px solid var(--line);border-radius:8px;margin-bottom:10px;background:#fff;padding:8px}.table td{border:0;padding:7px 4px}.table td:before{content:attr(data-label);display:block;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:800;margin-bottom:2px}.product-actions .btn{flex:1 1 120px}.input{min-height:40px}}
+  </style>
+</head>
+<body>
+  <div id="globalStatus" class="notice hidden">Bezig...</div>
+  <div id="loginView" class="login panel stack">
+    <h1>Admin login</h1>
+    <p class="muted">Log in als owner, admin of medewerker.</p>
+    <label class="field"><span>Google Apps Script Web App URL</span><input class="input" id="apiBase" placeholder="https://script.google.com/macros/s/.../exec"></label>
+    <button class="btn" onclick="saveApiBase()" type="button">API URL opslaan</button>
+    <form id="loginForm" class="stack">
+      <label class="field"><span>E-mail</span><input class="input" name="email" type="email" required></label>
+      <label class="field"><span>Wachtwoord</span><input class="input" name="password" type="password" required></label>
+      <button class="btn primary">Inloggen</button>
+    </form>
+    <form id="forgotAdminForm" class="stack">
+      <label class="field"><span>Wachtwoord vergeten?</span><input class="input" name="email" type="email" placeholder="E-mailadres"></label>
+      <button class="btn" type="submit">Herstelcode mailen</button>
+    </form>
+    <div id="loginMsg"></div>
+  </div>
+
+  <div id="appView" class="hidden app-shell">
+    <div class="statusbar">
+      <span>Systeemstatus: Alles operationeel</span>
+      <span>Laatste sync: zojuist</span>
+      <span>Database: Google Sheets verbonden</span>
+      <span>Apps Script API: Actief</span>
+      <span id="adminClock">--:--</span>
+    </div>
+    <aside class="sidebar">
+      <div class="brand">Webshop System<small>Powered by Van Appiah</small></div>
+      <nav class="nav">
+        <button data-tab="dashboard" class="active">Dashboard</button>
+        <button data-tab="orders">Bestellingen</button>
+        <button data-tab="products">Producten</button>
+        <button data-tab="sold">Verkochte producten</button>
+        <button data-tab="discounts">Kortingen</button>
+        <button data-tab="returns">Retouren</button>
+        <button data-tab="reviews">Reviews</button>
+        <button data-tab="customers">Klanten</button>
+        <button data-tab="staff">Medewerkers</button>
+        <button data-tab="settings">Bedrijfsgegevens</button>
+        <button data-tab="logs">E-mails & audit log</button>
+        <button onclick="logout()">Uitloggen</button>
+      </nav>
+      <div class="sidebar-credit">
+        <strong>Verplichte credit actief</strong>
+        <span class="muted">Webshop System powered and made by</span><br>
+        <a href="https://vanappiah.com/" target="_blank" rel="noopener">Van Appiah · VA</a>
+      </div>
+    </aside>
+    <div class="app-main">
+      <header class="top">
+        <div class="bar">
+          <div>
+            <div class="page-title">Admin Dashboard</div>
+            <div class="muted" id="actor"></div>
+          </div>
+          <div class="top-actions">
+            <input class="search" id="adminSearch" placeholder="Zoeken..." oninput="adminSearch(this.value)">
+            <span class="avatar" id="actorInitial">A</span>
+            <span class="role-badge" id="actorRole">Owner</span>
+          </div>
+        </div>
+      </header>
+      <main class="shell">
+      <section id="dashboard" class="section active">
+        <div class="dashboard-layout">
+          <div class="dash-main">
+            <div class="panel">
+              <h1 style="margin:0">Welkom terug</h1>
+              <p class="muted">Hieronder vind je een licht overzicht van je webshop, orders en voorraad.</p>
+              <div id="metrics" class="grid cards"></div>
+            </div>
+            <div class="panel toolbar">
+              <button class="btn primary">Deze maand</button>
+              <button class="btn" onclick="refreshAll(true)">Statistieken vernieuwen</button>
+              <button class="btn" onclick="document.querySelector('[data-tab=orders]').click()">Export orders</button>
+              <button class="btn" onclick="document.querySelector('[data-tab=sold]').click()">Productwinst</button>
+            </div>
+            <div class="grid two">
+              <div class="panel">
+                <div class="split"><h2>Best verkochte producten</h2><button class="btn" onclick="document.querySelector('[data-tab=sold]').click()">Bekijk</button></div>
+                <div id="bestProducts" class="mini-list"></div>
+              </div>
+              <div class="panel">
+                <h2>Orderstatus overzicht</h2>
+                <div id="orderStatusSummary" class="mini-list"></div>
+              </div>
+            </div>
+            <div class="grid two">
+              <div class="panel">
+                <div class="split"><h2>Recente bestellingen</h2><button class="btn" onclick="document.querySelector('[data-tab=orders]').click()">Bekijk alle</button></div>
+                <div id="recentOrders" class="scroll"></div>
+              </div>
+              <div class="panel">
+                <div class="split"><h2>Producten & voorraad</h2><button class="btn" onclick="document.querySelector('[data-tab=products]').click()">Bekijk alle</button></div>
+                <div id="stockWarning" class="mini-list"></div>
+              </div>
+            </div>
+          </div>
+          <aside class="stack">
+            <div class="panel quick-card">
+              <h2>Snelle acties</h2>
+              <button class="btn primary" onclick="document.querySelector('[data-tab=products]').click()">Nieuw product</button>
+              <button class="btn" onclick="document.querySelector('[data-tab=discounts]').click()">Nieuwe kortingscode</button>
+              <button class="btn" onclick="document.querySelector('[data-tab=staff]').click()">Medewerker toevoegen</button>
+              <button class="btn" onclick="document.querySelector('[data-tab=settings]').click()">Bedrijfsgegevens</button>
+            </div>
+            <div class="panel">
+              <div class="split"><h2>Team & rollen</h2><button class="btn" onclick="document.querySelector('[data-tab=staff]').click()">Bekijk</button></div>
+              <div id="teamRoles" class="mini-list"></div>
+            </div>
+            <div class="panel">
+              <h2>Systeem</h2>
+              <div class="mini-list">
+                <div class="mini-row"><span>Google Sheets database</span><strong>gekoppeld</strong></div>
+                <div class="mini-row"><span>Apps Script API</span><strong>actief</strong></div>
+                <div class="mini-row"><span>Drive sync</span><strong>beschikbaar</strong></div>
+                <div class="mini-row"><span>Sessies</span><strong>beveiligd</strong></div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="orders" class="section">
+        <div class="split"><h1>Orders beheren</h1><button class="btn" onclick="loadOrders(true)">Vernieuwen</button></div>
+        <div class="panel scroll"><table class="table"><thead><tr><th>Order</th><th>Klant</th><th>Status</th><th>Betaling</th><th>Levering</th><th>Totaal</th><th>Actie</th></tr></thead><tbody id="ordersBody"></tbody></table></div>
+      </section>
+
+      <section id="products" class="section">
+        <div class="grid cols">
+          <form id="productForm" class="panel stack">
+            <h2>Product aanmaken</h2>
+            <label class="field"><span>Naam</span><input class="input" name="name" required></label>
+            <label class="field"><span>Verkoopprijs incl. BTW</span><input class="input" name="sell_price" type="number" step="0.01" required></label>
+            <label class="field"><span>Inkoopprijs</span><input class="input" name="cost_price" type="number" step="0.01" value="0"></label>
+            <label><input type="checkbox" name="vat_enabled" value="true" checked> BTW aan</label>
+            <label class="field"><span>BTW %</span><input class="input" name="vat_percentage" type="number" step="0.01" value="21"></label>
+            <label class="field"><span>Voorraad</span><input class="input" name="stock" type="number" required></label>
+            <label class="field"><span>SKU</span><input class="input" name="sku"></label>
+            <label class="field"><span>Categorie</span><input class="input" name="category"></label>
+            <label class="field"><span>Kortingstype</span><select class="input" name="discount_type"><option value="none">Geen</option><option value="percent">Percentage</option><option value="fixed">Vast bedrag</option></select></label>
+            <label class="field"><span>Kortingswaarde</span><input class="input" name="discount_value" type="number" step="0.01" value="0"></label>
+            <label class="field"><span>Afbeelding URL</span><input class="input" name="image_url"></label>
+            <label class="field"><span>Extra afbeeldingen (1 Drive-link of URL per regel)</span><textarea class="input" name="image_urls" rows="3"></textarea></label>
+            <label class="field"><span>Beschrijving</span><textarea class="input" name="description" rows="4"></textarea></label>
+            <button class="btn primary">Aanmaken + Drive-map</button>
+          </form>
+          <div class="panel scroll"><div class="split"><h2>Producten</h2><div class="toolbar"><button class="btn" onclick="loadProducts(true)">Vernieuwen</button><button class="btn" onclick="syncAllProductImages(this)">Alle Drive-sync</button><button class="btn" onclick="runSystemCheck(this)">Systeemcheck</button><button class="btn" onclick="installAutomationTriggers(this)">10-min triggers</button></div></div><table class="table"><thead><tr><th>Product</th><th>Voorraad</th><th>Inkoop</th><th>Verkoop</th><th>Marge</th><th>Korting/Drive</th><th>Actie</th></tr></thead><tbody id="productsBody"></tbody></table></div>
+        </div>
+      </section>
+
+      <section id="returns" class="section">
+        <div class="split"><h1>Retouren</h1><button class="btn" onclick="loadReturns()">Vernieuwen</button></div>
+        <div class="panel scroll"><table class="table"><thead><tr><th>Retour</th><th>Order</th><th>Product</th><th>Klant</th><th>Status</th><th>Actie</th></tr></thead><tbody id="returnsBody"></tbody></table></div>
+      </section>
+
+      <section id="reviews" class="section">
+        <div class="split"><h1>Reviews</h1><button class="btn" onclick="loadReviews(true)">Vernieuwen</button></div>
+        <div class="panel scroll"><table class="table"><thead><tr><th>Type</th><th>Naam</th><th>Rating</th><th>Review</th><th>Status</th><th>Actie</th></tr></thead><tbody id="reviewsBody"></tbody></table></div>
+      </section>
+
+      <section id="customers" class="section">
+        <div class="grid cols">
+          <form id="customerForm" class="panel stack">
+            <h2>Klant toevoegen</h2>
+            <label class="field"><span>Naam</span><input class="input" name="name" required></label>
+            <label class="field"><span>Email</span><input class="input" name="email" type="email" required></label>
+            <label class="field"><span>Telefoon</span><input class="input" name="phone"></label>
+            <label class="field"><span>Tijdelijk wachtwoord optioneel</span><input class="input" name="password"></label>
+            <label><input type="checkbox" name="send_reset" value="true" checked> Resetlink sturen</label>
+            <button class="btn primary">Klant toevoegen</button>
+          </form>
+          <div class="panel scroll"><h1>Klanten</h1><table class="table"><thead><tr><th>Naam</th><th>Email</th><th>Telefoon</th><th>Actief</th><th>Laatste login</th><th>Actie</th></tr></thead><tbody id="customersBody"></tbody></table></div>
+        </div>
+      </section>
+
+      <section id="sold" class="section">
+        <div class="split"><h1>Verkochte producten</h1><div><button class="btn" onclick="loadSoldProducts(true)">Statistieken vernieuwen</button> <button class="btn" onclick="exportSoldProductsCsv()">CSV export</button></div></div>
+        <div class="panel">
+          <div class="grid two">
+            <label class="field"><span>Periode</span><select class="input" id="soldPeriod" onchange="loadSoldProducts()"><option value="today">Vandaag</option><option value="week">Deze week</option><option value="month" selected>Deze maand</option><option value="quarter">Dit kwartaal</option><option value="year">Dit jaar</option><option value="all">Alles</option><option value="custom">Eigen periode</option></select></label>
+            <div class="grid two"><label class="field"><span>Van</span><input class="input" id="soldFrom" type="date"></label><label class="field"><span>Tot</span><input class="input" id="soldTo" type="date"></label></div>
+          </div>
+        </div>
+        <div id="soldMetrics" class="grid cards" style="margin-top:14px"></div>
+        <div class="panel scroll" style="margin-top:14px"><table class="table"><thead><tr><th>Product</th><th>SKU</th><th>Verkocht</th><th>Omzet</th><th>Inkoop</th><th>Brutowinst</th><th>Marge</th><th>Voorraad</th><th>Status</th></tr></thead><tbody id="soldBody"></tbody></table></div>
+      </section>
+
+      <section id="discounts" class="section">
+        <div class="grid cols">
+          <form id="couponForm" class="panel stack">
+            <h2>Kortingscode toevoegen</h2>
+            <label class="field"><span>Code</span><input class="input" name="code" required></label>
+            <label class="field"><span>Type</span><select class="input" name="discount_type"><option value="percent">Percentage</option><option value="fixed">Vast bedrag</option></select></label>
+            <label class="field"><span>Waarde</span><input class="input" name="discount_value" type="number" step="0.01" required></label>
+            <label class="field"><span>Verloopt op</span><input class="input" name="expires_at" type="date"></label>
+            <label class="field"><span>Gebruikslimiet (0 = onbeperkt)</span><input class="input" name="usage_limit" type="number" value="0"></label>
+            <button class="btn primary">Kortingscode opslaan</button>
+          </form>
+          <div class="panel scroll"><h2>Kortingscodes</h2><table class="table"><thead><tr><th>Code</th><th>Type</th><th>Waarde</th><th>Actief</th><th>Gebruik</th><th>Actie</th></tr></thead><tbody id="couponsBody"></tbody></table></div>
+        </div>
+      </section>
+
+      <section id="staff" class="section">
+        <div class="grid cols">
+          <form id="staffForm" class="panel stack">
+            <h2>Medewerker toevoegen</h2>
+            <label class="field"><span>Naam</span><input class="input" name="name" required></label>
+            <label class="field"><span>Email</span><input class="input" name="email" type="email" required></label>
+            <label class="field"><span>Rol</span><select class="input" name="role"><option>admin</option><option>accountant</option><option>product_manager</option><option>order_manager</option><option>support</option></select></label>
+            <label class="field"><span>Tijdelijk wachtwoord optioneel</span><input class="input" name="password"></label>
+            <button class="btn primary">Toevoegen</button>
+          </form>
+          <div class="panel scroll"><h2>Medewerkers</h2><table class="table"><thead><tr><th>Naam</th><th>Email</th><th>Rol</th><th>Actief</th><th>Actie</th></tr></thead><tbody id="staffBody"></tbody></table></div>
+        </div>
+      </section>
+
+      <section id="logs" class="section">
+        <div class="grid two">
+          <div class="panel scroll"><h2>Email log</h2><div id="emailLog"></div></div>
+          <div class="panel scroll"><h2>Audit log</h2><div id="auditLog"></div></div>
+        </div>
+      </section>
+
+      <section id="settings" class="section">
+        <div class="split"><h1>Instellingen</h1><button class="btn" onclick="loadCompanySettings()">Vernieuwen</button></div>
+        <form id="companyForm" class="panel stack">
+          <h2>Bedrijfsgegevens</h2>
+          <div id="companyFields" class="grid two"></div>
+          <button class="btn primary">Bedrijfsgegevens opslaan</button>
+        </form>
+        <form id="passwordForm" class="panel stack" style="margin-top:14px">
+          <h2>Wachtwoord wijzigen</h2>
+          <div class="grid two">
+            <label class="field"><span>Huidig wachtwoord</span><input class="input" name="current_password" type="password" required></label>
+            <label class="field"><span>Nieuw wachtwoord</span><input class="input" name="new_password" type="password" minlength="8" required></label>
+          </div>
+          <button class="btn primary">Wachtwoord opslaan</button>
+        </form>
+        <div class="panel" style="margin-top:14px">
+          <h2>Handleiding</h2>
+          <div class="stack muted">
+            <p><strong>Orders:</strong> open een order om betaallink, track & trace, status, mailgeschiedenis en tijdlijn te bekijken.</p>
+            <p><strong>Mails:</strong> bij een order zie je welke mails al zijn verstuurd. Verstuur niet dubbel als er vandaag al een waarschuwing staat.</p>
+            <p><strong>Producten:</strong> vul inkoopprijs en verkoopprijs in. De marge wordt automatisch berekend na opslaan.</p>
+            <p><strong>Afbeeldingen:</strong> upload afbeeldingen in de productmap in Drive en klik in Producten op Afbeeldingen syncen. De map wordt publiek gedeeld met link.</p>
+            <p><strong>Verkochte producten:</strong> licht overzicht van verkochte aantallen, omzet, inkoop en brutowinst per product. Geen volledig administratiepakket.</p>
+            <p><strong>Archief:</strong> archiveer oude producten/orders/retouren in plaats van verwijderen.</p>
+          </div>
+        </div>
+      </section>
+      </main>
+      <footer class="bottom-dock">
+        <div class="dock-item"><strong>Mail history</strong><span>Laatste e-mail: recent</span></div>
+        <div class="dock-item"><strong>Audit log</strong><span>Updates gelogd</span></div>
+        <div class="dock-item"><strong>Bedrijfsinstellingen</strong><span id="adminFooterCompany">Webshop Admin</span></div>
+        <div class="dock-item"><strong>Drive sync</strong><span>Productmappen actief</span></div>
+        <div class="dock-item"><strong>Retouren</strong><span>Overzicht beschikbaar</span></div>
+        <div class="dock-item"><strong>Credit</strong><span id="adminCredit"></span></div>
+      </footer>
+    </div>
+  </div>
+
+  <dialog id="orderDialog" class="panel" style="width:min(760px,94vw);border:1px solid var(--line);color:var(--ink);background:var(--panel)">
+    <div class="split"><h2 id="dialogTitle">Order</h2><button class="btn" onclick="orderDialog.close()">Sluiten</button></div>
+    <div id="orderDetails" class="stack"></div>
+  </dialog>
+
+  <script>
+    const DEFAULT_API_BASE='https://script.google.com/macros/s/AKfycby4v4-8geXg2sRDQoiBonwivedBw3gWcGaqTyKE4YqnAK9AeBoRU8ul3aSi4o_dciskJw/exec';
+    const state={token:localStorage.getItem('webshop_staff_token')||'',apiBase:localStorage.getItem('webshop_api_base')||DEFAULT_API_BASE,staff:null,permissions:[],company:{},stats:null,orders:[],products:[],returns:[],reviews:[],customers:[],staffList:[],sold:null,coupons:[],loaded:{}};
+    const qs=s=>document.querySelector(s), qsa=s=>Array.from(document.querySelectorAll(s));
+    const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const money=v=>'EUR '+Number(v||0).toFixed(2);
+    qs('#apiBase').value=state.apiBase;
+    function setStatus(text,type='success'){const el=qs('#globalStatus');el.className=`notice ${type==='error'?'error':''}`;el.textContent=text;el.classList.remove('hidden');clearTimeout(setStatus.timer);setStatus.timer=setTimeout(()=>el.classList.add('hidden'),type==='error'?6500:2200)}
+    function setBusy(button,text){if(!button)return()=>{};const old=button.textContent;button.disabled=true;button.classList.add('busy');button.textContent=text||'Bezig...';return()=>{button.disabled=false;button.classList.remove('busy');button.textContent=old}}
+    async function withBusy(button,text,fn){const done=setBusy(button,text);try{return await fn()}finally{done()}}
+    function saveApiBase(silent){state.apiBase=qs('#apiBase').value.trim()||DEFAULT_API_BASE;localStorage.setItem('webshop_api_base',state.apiBase);if(!silent)setStatus('API URL opgeslagen.')}
+    async function requestJson(url,options={}){
+      const controller=new AbortController();
+      const timer=setTimeout(()=>controller.abort(),25000);
+      try{
+        const response=await fetch(url,{...options,signal:controller.signal});
+        const text=await response.text();
+        try{return JSON.parse(text)}catch(error){return {success:false,data:null,error:{message:'Geen geldige API-response ontvangen. Controleer deployment/toegang.',code:502,raw:text.slice(0,180)}}}
+      }catch(error){
+        return {success:false,data:null,error:{message:error.name==='AbortError'?'De API reageert te traag. Probeer opnieuw.':'API niet bereikbaar. Controleer internet, deployment en Web App URL.',code:0}};
+      }finally{clearTimeout(timer)}
+    }
+    async function api(action,data={}){
+      if(!state.apiBase)return {success:false,data:null,error:{message:`Vul eerst de Google Apps Script Web App URL in. (action: ${action})`,code:400,action}};
+      const result=await requestJson(state.apiBase,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,token:state.token,...data})});
+      if(!result.success){
+        result.error=result.error||{message:'Onbekende fout',code:500};
+        result.error.action=action;
+        if(!String(result.error.message||'').includes(action))result.error.message=`${result.error.message||'Onbekende fout'} (action: ${action})`;
+      }
+      return result;
+    }
+    function note(t,err=false){return `<div class="notice ${err?'error':''}">${esc(t)}</div>`}
+    qsa('[data-tab]').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
+    qs('#loginForm').addEventListener('submit',async e=>{e.preventDefault();const btn=e.submitter||e.target.querySelector('button[type="submit"]');await withBusy(btn,'Inloggen...',async()=>{saveApiBase(true);qs('#loginMsg').innerHTML=note('Inloggen...');const r=await api('adminLogin',Object.fromEntries(new FormData(e.target)));if(!r.success){qs('#loginMsg').innerHTML=note(r.error.message,true);return}state.token=r.data.token;state.staff=r.data.staff;state.permissions=r.data.permissions||[];localStorage.setItem('webshop_staff_token',state.token);setStatus('Ingelogd. Dashboard laden...');await start()})});
+    qs('#forgotAdminForm').addEventListener('submit',async e=>{e.preventDefault();const btn=e.submitter||e.target.querySelector('button');await withBusy(btn,'Mailen...',async()=>{saveApiBase(true);const r=await api('requestAdminPasswordCode',Object.fromEntries(new FormData(e.target)));qs('#loginMsg').innerHTML=note(r.success?r.data.message:r.error.message,!r.success)})});
+    async function start(){if(!state.token)return;const session=await api('getStaffSession');if(!session.success){localStorage.removeItem('webshop_staff_token');setStatus(session.error.message,'error');return}state.staff=session.data.staff;state.permissions=session.data.permissions||[];qs('#loginView').classList.add('hidden');qs('#appView').classList.remove('hidden');applyPermissions();updateActorUi();loadCompanyFooter();const first=qsa('[data-tab]').find(b=>!b.classList.contains('hidden'));if(first)setTimeout(()=>showTab(first.dataset.tab),0)}
+    function logout(){api('logout').then(()=>{state.token='';localStorage.removeItem('webshop_staff_token');location.reload()})}
+    function can(permission){return state.permissions.includes('*')||state.permissions.includes(permission)}
+    function applyPermissions(){const map={dashboard:'dashboard:view',orders:'orders:view',products:'products:view',returns:'returns:view',reviews:'reviews:view',customers:'customers:view',staff:'staff:view',settings:'settings:view',logs:'logs:view',sold:'revenue:view',discounts:'products:view'};qsa('[data-tab]').forEach(b=>{const p=map[b.dataset.tab];b.classList.toggle('hidden',p&&!can(p))})}
+    function showTab(tab,force=false){const btn=qs(`[data-tab="${tab}"]`);if(!btn||btn.classList.contains('hidden'))return;qsa('[data-tab]').forEach(x=>x.classList.remove('active'));btn.classList.add('active');qsa('.section').forEach(s=>s.classList.remove('active'));qs('#'+tab).classList.add('active');loadTab(tab,force)}
+    function loadTab(tab,force=false){if(state.loaded[tab]&&!force)return;state.loaded[tab]=true;if(tab==='dashboard')refreshAll(force);if(tab==='orders')loadOrders(force);if(tab==='products')loadProducts(force);if(tab==='returns')loadReturns(force);if(tab==='reviews')loadReviews(force);if(tab==='customers')loadCustomers(force);if(tab==='staff')loadStaff(force);if(tab==='logs')loadLogs(force);if(tab==='settings')loadCompanySettings(force);if(tab==='sold')loadSoldProducts(force);if(tab==='discounts')loadCoupons(force)}
+    function skeletonRows(cols,count=5){return Array.from({length:count},()=>`<tr>${Array.from({length:cols},()=>'<td><div class="skeleton row"></div></td>').join('')}</tr>`).join('')}
+    function skeletonCards(count=4){return Array.from({length:count},()=>'<div class="skeleton card"></div>').join('')}
+    function updateActorUi(){if(!state.staff)return;qs('#actor').textContent=`${state.staff.name} - ${state.staff.role}`;qs('#actorInitial').textContent=(state.staff.name||state.staff.email||'A').slice(0,1).toUpperCase();qs('#actorRole').textContent=state.staff.role||'Owner'}
+    async function refreshAll(force){qs('#metrics').innerHTML=skeletonCards(6);qs('#recentOrders').innerHTML='<div class="skeleton card"></div>';qs('#bestProducts').innerHTML='<div class="skeleton card"></div>';qs('#stockWarning').innerHTML='<div class="skeleton card"></div>';qs('#orderStatusSummary').innerHTML='<div class="skeleton card"></div>';const r=await api('getDashboardStats',{refresh:!!force});if(!r.success){qs('#metrics').innerHTML=note(r.error.message,true);setStatus(r.error.message,'error');return}state.stats=r.data;state.staff=r.data.actor;updateActorUi();applyPermissions();renderDashboard();if(r.data.cached)setStatus('Dashboard geladen uit cache.')}
+    function renderDashboard(){const s=state.stats;qs('#metrics').innerHTML=[['Omzet incl. BTW',money(s.total_revenue),'18,6% vs vorige periode'],['Omzet vandaag',money(s.revenue_today),'Actuele dagomzet'],['Open bestellingen',s.open_payments,'Nog op te volgen'],['Gem. orderwaarde',money(s.average_order_value),'Betaalde orders'],['Retouren',s.return_requests||0,'In behandeling'],['Lage voorraad',(s.low_stock_products||[]).length,'Onder drempel']].map(m=>`<article class="panel metric"><span class="muted">${m[0]}</span><strong>${esc(m[1])}</strong><div class="trend">${esc(m[2])}</div></article>`).join('');qs('#bestProducts').innerHTML=(s.best_selling_products||[]).slice(0,6).map(p=>`<div class="mini-row"><span>${esc(p.name)}</span><strong>${esc(p.quantity)}</strong></div>`).join('')||'<p class="muted">Nog geen verkopen.</p>';const paid=s.paid_order_count||0,open=s.open_payments||0,total=Math.max(1,s.order_count||0);qs('#orderStatusSummary').innerHTML=[['Betaald',paid],['Openstaand',open],['Overig',Math.max(0,total-paid-open)]].map(x=>`<div class="mini-row"><span>${x[0]}</span><strong>${x[1]} · ${Math.round(x[1]/total*100)}%</strong></div>`).join('');qs('#stockWarning').innerHTML=(s.low_stock_products||[]).slice(0,6).map(p=>`<div class="mini-row"><span>${esc(p.name)}</span><strong>${esc(p.stock)}</strong></div>`).join('')||'<p class="muted">Geen lage voorraad.</p>';qs('#teamRoles').innerHTML=[['Owner',1],['Admin',2],['Accountant',1],['Product manager',1],['Order manager',2],['Support',3]].map(r=>`<div class="mini-row"><span>${r[0]}</span><strong>${r[1]}</strong></div>`).join('');qs('#recentOrders').innerHTML=table(['Order','Klant','Betaling','Levering','Totaal'],(s.recent_orders||[]).slice(0,6).map(o=>[o.order_id,o.customer_name,`<span class="pill">${esc(o.payment_status)}</span>`,`<span class="pill">${esc(o.fulfillment_status)}</span>`,money(o.total_price)]))}
+    function table(headers,rows){return `<table class="table"><thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>`}
+    async function loadOrders(force=false){if(state.orders.length&&!force){renderOrders();return}qs('#ordersBody').innerHTML=skeletonRows(7,6);const r=await api('getOrders',{limit:80});if(!r.success){qs('#ordersBody').innerHTML=`<tr><td colspan="7">${note(r.error.message,true)}</td></tr>`;return}state.orders=r.data||[];renderOrders()}
+    function renderOrders(){qs('#ordersBody').innerHTML=state.orders.map(o=>`<tr><td>${esc(o.order_id)}</td><td>${esc(o.customer_name)}<br><span class="muted">${esc(o.email)}</span></td><td><span class="pill">${esc(o.status)}</span></td><td><span class="pill">${esc(o.payment_status)}</span></td><td><span class="pill">${esc(o.fulfillment_status)}</span></td><td>${money(o.total_price)}</td><td><button class="btn" onclick="openOrder('${esc(o.order_id)}',this)">Open</button></td></tr>`).join('')}
+    async function openOrder(id,button){await withBusy(button,'Openen...',async()=>{const r=await api('getOrderDetails',{order_id:id});if(!r.success){setStatus(r.error.message,'error');return}const o=r.data;qs('#dialogTitle').textContent='Order '+o.order_id;qs('#orderDetails').innerHTML=`${(o.mail_warnings||[]).map(w=>note(w,true)).join('')}<div class="grid two"><div class="panel"><h3>Klant</h3><p><strong>${esc(o.customer_name)}</strong><br>${esc(o.email)}<br>${esc(o.phone||'')}<br>${esc(o.address||'')} ${esc(o.customer_postal_code||'')} ${esc(o.customer_city||'')}</p><p class="muted">Datum: ${esc(o.created_at)}</p></div><div class="panel"><h3>Totalen</h3><div class="split"><span>Subtotaal</span><strong>${money(o.subtotal)}</strong></div><div class="split"><span>Korting</span><strong>${money(o.discount_total)}</strong></div><div class="split"><span>Verzending</span><strong>${money(o.shipping_cost)}</strong></div><div class="split"><span>BTW</span><strong>${money(o.vat_amount)}</strong></div><div class="split"><span>Totaal</span><strong>${money(o.total_price)}</strong></div></div></div><div class="grid two"><label class="field"><span>Orderstatus</span><select class="input" id="os">${['new','accepted','processing','completed','cancelled','archived'].map(x=>`<option ${x===o.status?'selected':''}>${x}</option>`)}</select></label><label class="field"><span>Betaalstatus</span><select class="input" id="ps">${['pending','payment_link_sent','paid','failed','refunded','cancelled'].map(x=>`<option ${x===o.payment_status?'selected':''}>${x}</option>`)}</select></label><label class="field"><span>Betaallink</span><input class="input" id="pl" value="${esc(o.payment_link||'')}" placeholder="https://..."></label><label class="field"><span>Leveringsstatus</span><select class="input" id="fs">${['pending','processing','packed','shipped','out_for_delivery','delivered','ready_for_pickup','picked_up','cancelled'].map(x=>`<option ${x===o.fulfillment_status?'selected':''}>${x}</option>`)}</select></label><label class="field"><span>Track & trace link</span><input class="input" id="tr" value="${esc(o.track_trace||'')}" placeholder="https://..."></label></div><div class="split"><button class="btn" onclick="saveOrderStatus('${esc(o.order_id)}',this)">Order opslaan</button><button class="btn warn" onclick="savePayment('${esc(o.order_id)}',this)">Betaling + link opslaan</button><button class="btn primary" onclick="saveFulfillment('${esc(o.order_id)}',this)">Tracking opslaan</button></div><h3>Producten</h3>${(o.items||[]).map(i=>`<div class="split"><span>${esc(i.product_name)} x ${esc(i.quantity)}</span><strong>${money(i.line_total||i.price*i.quantity)}</strong></div>`).join('')}<h3>Mail history</h3>${(o.email_history||[]).map(e=>`<div class="panel"><strong>${esc(e.template||e.type)}</strong><br><span class="muted">${esc(e.created_at)} - ${esc(e.recipient||e.to)} - ${esc(e.status)}</span><br><button class="btn" onclick="resendOrderEmail('${esc(o.order_id)}','${esc(e.template||e.type)}',this)">Opnieuw versturen</button></div>`).join('')||'<p class="muted">Nog geen mails.</p>'}<div class="split"><h3>Tijdlijn</h3><button class="btn" onclick="resendOrderEmail('${esc(o.order_id)}','order_update',this)">Algemene update mailen</button></div>${(o.history||[]).map(h=>`<div class="panel"><strong>${esc(h.action)}</strong><br><span class="muted">${esc(h.created_at)} - ${esc(h.actor)}</span><br>${esc(h.old_value)} → ${esc(h.new_value)} ${h.notes?'<br>'+esc(h.notes):''}</div>`).join('')||'<p class="muted">Nog geen history.</p>'}`;orderDialog.showModal()})}
+    async function saveOrderStatus(id,button){await withBusy(button,'Opslaan...',async()=>{const r=await api('updateOrderStatus',{order_id:id,status:qs('#os').value});setStatus(r.success?'Order opgeslagen.':r.error.message,r.success?'success':'error');if(r.success){state.loaded.dashboard=false;loadOrders(true)}})}
+    async function savePayment(id,button){await withBusy(button,'Opslaan...',async()=>{const r=await api('updatePaymentStatus',{order_id:id,payment_status:qs('#ps').value,payment_link:qs('#pl').value});setStatus(r.success?'Betaling en betaallink opgeslagen.':r.error.message,r.success?'success':'error');if(r.success){state.loaded.dashboard=false;loadOrders(true)}})}
+    async function saveFulfillment(id,button){await withBusy(button,'Opslaan...',async()=>{const r=await api('updateFulfillmentStatus',{order_id:id,fulfillment_status:qs('#fs').value,track_trace:qs('#tr').value});setStatus(r.success?'Levering opgeslagen.':r.error.message,r.success?'success':'error');if(r.success)loadOrders(true)})}
+    async function resendOrderEmail(id,template,button){await withBusy(button,'Mailen...',async()=>{const r=await api('resendOrderEmail',{order_id:id,template});setStatus(r.success?'Mail opnieuw verstuurd.':r.error.message,r.success?'success':'error')})}
+    qs('#productForm').addEventListener('submit',async e=>{e.preventDefault();const btn=e.submitter||e.target.querySelector('button');await withBusy(btn,'Aanmaken...',async()=>{const r=await api('createProduct',Object.fromEntries(new FormData(e.target)));setStatus(r.success?'Product aangemaakt.':r.error.message,r.success?'success':'error');if(r.success){e.target.reset();state.loaded.dashboard=false;loadProducts(true)}})});
+    async function loadProducts(force=false){if(state.products.length&&!force){renderProductsAdmin();return}qs('#productsBody').innerHTML=skeletonRows(7,6);const r=await api('getProductsAdmin');if(!r.success){qs('#productsBody').innerHTML=`<tr><td colspan="7">${note(r.error.message,true)}</td></tr>`;return}state.products=r.data||[];renderProductsAdmin()}
+    function productStatusClass(p){const s=String(p.status||'active').toLowerCase();if(s==='archived')return 'status-archived';if(Number(p.stock||0)<=0||s==='out_of_stock')return 'status-out';return 'status-active'}
+    function renderProductsAdmin(){qs('#productsBody').innerHTML=state.products.map(p=>{const id=esc(p.product_id||p.id);const archived=String(p.status||'').toLowerCase()==='archived';const imgs=(p.images||[]).slice(0,4).map(i=>`<img src="${esc(i.url)}" alt="" onerror="this.style.display='none'">`).join('');return `<tr><td data-label="Product"><div class="product-name">${esc(p.name)}</div><span class="muted">${id}</span><br><span class="pill ${productStatusClass(p)}">${esc(Number(p.stock||0)<=0&&!archived?'out_of_stock':(p.status||'active'))}</span> <span class="pill">${Number(p.image_count||0)} afbeelding(en)</span><div class="thumbs">${imgs}</div></td><td data-label="Voorraad"><input class="input" value="${esc(p.stock)}" id="stock-${id}"></td><td data-label="Inkoop"><input class="input" value="${esc(p.cost_price||0)}" id="cost-${id}"></td><td data-label="Verkoop"><input class="input" value="${esc(p.sell_price||p.price)}" id="price-${id}"><label><input type="checkbox" id="vat-${id}" ${String(p.vat_enabled).toLowerCase()!=='false'?'checked':''}> BTW</label></td><td data-label="Marge">${esc(p.margin_percentage||0)}%</td><td data-label="Korting/Drive"><select class="input" id="dtype-${id}"><option value="none" ${p.discount_type==='none'?'selected':''}>Geen</option><option value="percent" ${p.discount_type==='percent'?'selected':''}>%</option><option value="fixed" ${p.discount_type==='fixed'?'selected':''}>EUR</option></select><input class="input" style="margin-top:6px" value="${esc(p.discount_value||0)}" id="dval-${id}"><textarea class="input" rows="2" style="margin-top:6px" id="imgs-${id}" placeholder="Extra afbeelding links"></textarea>${p.drive_folder_url?`<br><a href="${esc(p.drive_folder_url)}" target="_blank">Drive-map openen</a><br><button class="btn" onclick="syncProductImages('${id}',this)">Afbeeldingen syncen</button>`:''}</td><td data-label="Actie"><div class="product-actions"><button class="btn" onclick="saveProductRow('${id}',this)">Opslaan</button><button class="btn" onclick="duplicateProduct('${id}',this)">Dupliceer</button>${archived?`<button class="btn primary" onclick="restoreProduct('${id}',this)">Herstel</button>`:`<button class="btn danger" onclick="archiveProduct('${id}',this)">Archief</button>`}</div></td></tr>`}).join('')||'<tr><td data-label="Product" class="muted">Geen producten in Google Sheets.</td></tr>'}
+    async function saveProductRow(id,button){await withBusy(button,'Opslaan...',async()=>{const extra=qs('#imgs-'+CSS.escape(id));const r=await api('updateProduct',{product_id:id,stock:qs('#stock-'+CSS.escape(id)).value,sell_price:qs('#price-'+CSS.escape(id)).value,cost_price:qs('#cost-'+CSS.escape(id)).value,vat_enabled:qs('#vat-'+CSS.escape(id)).checked,discount_type:qs('#dtype-'+CSS.escape(id)).value,discount_value:qs('#dval-'+CSS.escape(id)).value,image_urls:extra?extra.value:''});setStatus(r.success?'Product bijgewerkt.':r.error.message,r.success?'success':'error');if(r.success){state.loaded.dashboard=false;state.loaded.sold=false;loadProducts(true)}})}
+    async function archiveProduct(id,button){await withBusy(button,'Archiveren...',async()=>{const r=await api('archiveProduct',{product_id:id});setStatus(r.success?'Product gearchiveerd.':r.error.message,r.success?'success':'error');if(r.success){state.loaded.dashboard=false;loadProducts(true)}})}
+    async function restoreProduct(id,button){await withBusy(button,'Herstellen...',async()=>{const r=await api('restoreProduct',{product_id:id});setStatus(r.success?'Product hersteld.':r.error.message,r.success?'success':'error');if(r.success){state.loaded.dashboard=false;loadProducts(true)}})}
+    async function duplicateProduct(id,button){await withBusy(button,'Dupliceren...',async()=>{const r=await api('duplicateProduct',{product_id:id});setStatus(r.success?'Product gedupliceerd als draft.':r.error.message,r.success?'success':'error');if(r.success)loadProducts(true)})}
+    async function syncProductImages(id,button){await withBusy(button,'Syncen...',async()=>{const r=await api('syncProductImages',{product_id:id});setStatus(r.success?`${r.data.synced.length} afbeelding(en) gesynchroniseerd en publiek gedeeld.`:r.error.message,r.success?'success':'error');if(r.success)loadProducts(true)})}
+    async function syncAllProductImages(button){await withBusy(button,'Alles syncen...',async()=>{const r=await api('syncAllProductImages');setStatus(r.success?`${r.data.images_synced} afbeelding(en) gecontroleerd/gesynct voor ${r.data.products_checked} product(en).`:r.error.message,r.success?'success':'error');if(r.success)loadProducts(true)})}
+    async function runSystemCheck(button){await withBusy(button,'Checken...',async()=>{const r=await api('runSystemCheck');setStatus(r.success?(r.data.ok?'Systeemcheck OK.':`${r.data.issues.length} probleem/problemen gevonden. Mail wordt verstuurd als admin_email is ingesteld.`):r.error.message,r.success&&r.data.ok?'success':'error')})}
+    async function installAutomationTriggers(button){await withBusy(button,'Installeren...',async()=>{const r=await api('installAutomationTriggers');setStatus(r.success?'10-minuten Drive-sync en systeemcheck triggers geinstalleerd.':r.error.message,r.success?'success':'error')})}
+    async function saveStock(id,button){return saveProductRow(id,button)}
+    async function deactivateProduct(id,button){if(confirm('Product deactiveren?'))await withBusy(button,'Deactiveren...',async()=>{const r=await api('deactivateProduct',{product_id:id});setStatus(r.success?'Product gedeactiveerd.':r.error.message,r.success?'success':'error');if(r.success){state.loaded.dashboard=false;loadProducts(true)}})}
+    async function loadReturns(){qs('#returnsBody').innerHTML=skeletonRows(6,5);const r=await api('getReturns');if(!r.success){qs('#returnsBody').innerHTML=`<tr><td colspan="6">${note(r.error.message,true)}</td></tr>`;return}state.returns=r.data||[];qs('#returnsBody').innerHTML=state.returns.map(x=>`<tr><td>${esc(x.return_id)}</td><td>${esc(x.order_id)}</td><td>${esc(x.product_name)} x ${esc(x.quantity)}</td><td>${esc(x.email)}</td><td><select class="input" id="ret-${esc(x.return_id)}">${['requested','under_review','approved','rejected','received','refunded','closed'].map(s=>`<option ${s===x.status?'selected':''}>${s}</option>`)}</select></td><td><button class="btn" onclick="saveReturn('${esc(x.return_id)}',this)">Opslaan</button></td></tr>`).join('')}
+    async function saveReturn(id,button){await withBusy(button,'Opslaan...',async()=>{const r=await api('updateReturnStatus',{return_id:id,status:qs('#ret-'+CSS.escape(id)).value});setStatus(r.success?'Retour bijgewerkt.':r.error.message,r.success?'success':'error');loadReturns()})}
+    async function loadReviews(force=false){if(state.reviews.length&&!force){renderReviews();return}qs('#reviewsBody').innerHTML=skeletonRows(6,5);const r=await api('getReviewsAdmin',{limit:120});if(!r.success){qs('#reviewsBody').innerHTML=`<tr><td colspan="6">${note(r.error.message,true)}</td></tr>`;return}state.reviews=r.data||[];renderReviews()}
+    function renderReviews(){qs('#reviewsBody').innerHTML=state.reviews.map(r=>`<tr><td>${esc(r.target_type)}<br><span class="muted">${esc(r.product_name||r.target_id)}</span></td><td>${esc(r.name)}<br><span class="muted">${esc(r.email)}</span></td><td>${esc(r.rating)}/5</td><td><strong>${esc(r.title||'-')}</strong><br>${esc(r.message)}</td><td><select class="input" id="rev-${esc(r.review_id)}">${['pending','approved','rejected','archived'].map(s=>`<option ${s===r.status?'selected':''}>${s}</option>`)}</select></td><td><button class="btn" onclick="saveReviewStatus('${esc(r.review_id)}',this)">Opslaan</button></td></tr>`).join('')||'<tr><td colspan="6" class="muted">Nog geen reviews.</td></tr>'}
+    async function saveReviewStatus(id,button){await withBusy(button,'Opslaan...',async()=>{const r=await api('updateReviewStatus',{review_id:id,status:qs('#rev-'+CSS.escape(id)).value});setStatus(r.success?'Review bijgewerkt.':r.error.message,r.success?'success':'error');if(r.success)loadReviews(true)})}
+    async function loadCustomers(){qs('#customersBody').innerHTML=skeletonRows(6,5);const r=await api('getCustomers');if(!r.success){qs('#customersBody').innerHTML=`<tr><td colspan="6">${note(r.error.message,true)}</td></tr>`;return}state.customers=r.data||[];qs('#customersBody').innerHTML=state.customers.map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(c.email)}</td><td>${esc(c.phone)}</td><td>${esc(c.active)}</td><td>${esc(c.last_login||'-')}</td><td><button class="btn danger" onclick="deactivateCustomer('${esc(c.user_id)}',this)">Deactiveer</button></td></tr>`).join('')}
+    qs('#customerForm').addEventListener('submit',async e=>{e.preventDefault();const btn=e.submitter||e.target.querySelector('button');await withBusy(btn,'Toevoegen...',async()=>{const data=Object.fromEntries(new FormData(e.target));const r=await api('createCustomer',data);setStatus(r.success?('Klant toegevoegd'+(r.data.temporary_password?' tijdelijk wachtwoord: '+r.data.temporary_password:'')):r.error.message,r.success?'success':'error');if(r.success){e.target.reset();loadCustomers()}})});
+    async function deactivateCustomer(id,button){if(confirm('Klant deactiveren?'))await withBusy(button,'Deactiveren...',async()=>{const r=await api('deactivateCustomer',{user_id:id});setStatus(r.success?'Klant gedeactiveerd.':r.error.message,r.success?'success':'error');loadCustomers()})}
+    qs('#staffForm').addEventListener('submit',async e=>{e.preventDefault();const btn=e.submitter||e.target.querySelector('button');await withBusy(btn,'Toevoegen...',async()=>{const r=await api('createStaff',Object.fromEntries(new FormData(e.target)));setStatus(r.success?('Medewerker toegevoegd'+(r.data.temporary_password?' tijdelijk wachtwoord: '+r.data.temporary_password:'')):r.error.message,r.success?'success':'error');if(r.success){e.target.reset();loadStaff()}})});
+    async function loadStaff(){qs('#staffBody').innerHTML=skeletonRows(5,5);const r=await api('getStaff');if(!r.success){qs('#staffBody').innerHTML=`<tr><td colspan="5">${note(r.error.message,true)}</td></tr>`;return}state.staffList=r.data||[];qs('#staffBody').innerHTML=state.staffList.map(s=>`<tr><td>${esc(s.name)}</td><td>${esc(s.email)}</td><td>${esc(s.role)}</td><td>${esc(s.active)}</td><td><button class="btn danger" onclick="deactivateStaff('${esc(s.staff_id)}',this)">Deactiveer</button></td></tr>`).join('')}
+    async function deactivateStaff(id,button){if(confirm('Medewerker deactiveren?'))await withBusy(button,'Deactiveren...',async()=>{const r=await api('deactivateStaff',{staff_id:id});setStatus(r.success?'Medewerker gedeactiveerd.':r.error.message,r.success?'success':'error');loadStaff()})}
+    async function loadLogs(){qs('#emailLog').innerHTML='<p class="muted">Email log laden...</p>';qs('#auditLog').innerHTML='<p class="muted">Audit log laden...</p>';const [e,a]=await Promise.all([api('getEmailLog'),api('getAuditLog')]);qs('#emailLog').innerHTML=e.success?(e.data||[]).slice(0,80).map(x=>`<div class="panel"><strong>${esc(x.type)}</strong><br><span class="muted">${esc(x.to)} - ${esc(x.status)}</span></div>`).join(''):note(e.error.message,true);qs('#auditLog').innerHTML=a.success?(a.data||[]).slice(0,80).map(x=>`<div class="panel"><strong>${esc(x.action)}</strong><br><span class="muted">${esc(x.actor_email)} - ${esc(x.target_type)} ${esc(x.target_id)}</span></div>`).join(''):note(a.error.message,true)}
+    function soldFilter(refresh=false){return {period:qs('#soldPeriod').value,date_from:qs('#soldFrom').value,date_to:qs('#soldTo').value,refresh}}
+    async function loadSoldProducts(refresh=false){qs('#soldMetrics').innerHTML=skeletonCards(4);qs('#soldBody').innerHTML=skeletonRows(9,6);const r=await api('getSoldProductsReport',soldFilter(refresh));if(!r.success){qs('#soldBody').innerHTML=`<tr><td colspan="9">${note(r.error.message,true)}</td></tr>`;return}state.sold=r.data;qs('#soldMetrics').innerHTML=[['Omzet verkocht',money(r.data.total_revenue)],['Inkoopwaarde',money(r.data.total_cost)],['Brutowinst',money(r.data.gross_profit)],['Aantal verkocht',r.data.sold_quantity]].map(m=>`<article class="panel metric"><span class="muted">${m[0]}</span><strong>${m[1]}</strong></article>`).join('');qs('#soldBody').innerHTML=(r.data.products||[]).map(p=>`<tr><td>${esc(p.name)}</td><td>${esc(p.sku||'')}</td><td>${esc(p.quantity)}</td><td>${money(p.revenue)}</td><td>${money(p.cost)}</td><td>${money(p.gross_profit)}</td><td>${esc(p.margin_percentage)}%</td><td>${esc(p.stock)}</td><td><span class="pill">${esc(p.status)}</span></td></tr>`).join('')||'<tr><td colspan="9" class="muted">Nog geen verkochte producten in deze periode.</td></tr>'}
+    function exportSoldProductsCsv(){const rows=(state.sold&&state.sold.products)||[];downloadCsv('verkochte-producten.csv',['product_id','name','sku','quantity','revenue','cost','gross_profit','margin_percentage','stock','status'],rows)}
+    function exportOrdersCsv(){const rows=state.orders||[];const headers=['order_id','created_at','customer_name','email','payment_status','fulfillment_status','total_price'];downloadCsv('orders.csv',headers,rows)}
+    function downloadCsv(name,headers,rows){const csv=[headers.join(',')].concat(rows.map(r=>headers.map(h=>`"${String(r[h]??'').replace(/"/g,'""')}"`).join(','))).join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;a.click();URL.revokeObjectURL(url)}
+    async function loadCoupons(){qs('#couponsBody').innerHTML='<tr><td colspan="6" class="muted">Kortingscodes laden...</td></tr>';const r=await api('getCoupons');if(!r.success){qs('#couponsBody').innerHTML=`<tr><td colspan="6">${note(r.error.message,true)}</td></tr>`;return}state.coupons=r.data||[];qs('#couponsBody').innerHTML=state.coupons.map(c=>`<tr><td>${esc(c.code)}</td><td>${esc(c.discount_type)}</td><td>${esc(c.discount_value)}</td><td>${esc(c.active)}</td><td>${esc(c.used_count||0)} / ${esc(c.usage_limit||0)}</td><td><button class="btn danger" onclick="deactivateCoupon('${esc(c.coupon_id)}',this)">Deactiveer</button></td></tr>`).join('')}
+    qs('#couponForm').addEventListener('submit',async e=>{e.preventDefault();const btn=e.submitter||e.target.querySelector('button');await withBusy(btn,'Opslaan...',async()=>{const r=await api('createCoupon',Object.fromEntries(new FormData(e.target)));setStatus(r.success?'Kortingscode opgeslagen.':r.error.message,r.success?'success':'error');if(r.success){e.target.reset();loadCoupons()}})});
+    async function deactivateCoupon(id,button){await withBusy(button,'Deactiveren...',async()=>{const r=await api('deactivateCoupon',{coupon_id:id});setStatus(r.success?'Kortingscode gedeactiveerd.':r.error.message,r.success?'success':'error');loadCoupons()})}
+    const companyKeys=['website_name','company_name','brand_name','tagline','description','phone_1','phone_2','phone_3','email_1','email_2','email_3','address_street','address_house_number','address_postal_code','address_city','address_country','kvk_number','btw_number','opening_monday','opening_tuesday','opening_wednesday','opening_thursday','opening_friday','opening_saturday','opening_sunday','website_url','whatsapp_number','instagram_url','facebook_url','tiktok_url','youtube_url','linkedin_url','currency','language','logo_url','favicon_url','shipping_enabled','pickup_enabled','shipping_provider','shipping_time','shipping_cost','free_shipping_above','vat_percentage','return_policy','privacy_policy','terms_conditions','footer_text'];
+    async function loadCompanySettings(){qs('#companyFields').innerHTML='<p class="muted">Bedrijfsgegevens laden...</p>';const r=await api('getCompanySettings');if(!r.success){qs('#companyFields').innerHTML=note(r.error.message,true);return}state.company=r.data||{};qs('#companyFields').innerHTML=companyKeys.map(k=>`<label class="field"><span>${esc(k)}</span><textarea class="input" name="${esc(k)}" rows="${['description','return_policy','privacy_policy','terms_conditions','footer_text'].includes(k)?4:1}">${esc(state.company[k]||'')}</textarea></label>`).join('')}
+    qs('#companyForm').addEventListener('submit',async e=>{e.preventDefault();const btn=e.submitter||e.target.querySelector('button');await withBusy(btn,'Opslaan...',async()=>{const values=Object.fromEntries(new FormData(e.target));const r=await api('updateCompanySettings',{values});setStatus(r.success?'Bedrijfsgegevens opgeslagen.':r.error.message,r.success?'success':'error')})});
+    qs('#passwordForm').addEventListener('submit',async e=>{e.preventDefault();const btn=e.submitter||e.target.querySelector('button');await withBusy(btn,'Opslaan...',async()=>{const r=await api('changeStaffPassword',Object.fromEntries(new FormData(e.target)));setStatus(r.success?'Wachtwoord gewijzigd.':r.error.message,r.success?'success':'error');if(r.success)e.target.reset()})});
+    function loadCompanyFooter(){qs('#adminFooterCompany').innerHTML=`&copy; ${new Date().getFullYear()} Webshop System`;qs('#adminCredit').innerHTML=`Powered and made by Van Appiah <a href="https://vanappiah.com/" target="_blank" rel="noopener">VA</a>`}
+    function adminSearch(value){const v=String(value||'').trim().toLowerCase();if(!v)return;const target=[['orders',['order','bestelling']],['products',['product','voorraad']],['sold',['verkocht','winst','omzet']],['returns',['retour']],['customers',['klant']],['staff',['medewerker','rol']],['settings',['bedrijf','instelling']],['logs',['mail','audit']]].find(x=>x[1].some(k=>k.startsWith(v)||v.includes(k)));if(target){const btn=qs(`[data-tab="${target[0]}"]`);if(btn&&!btn.classList.contains('hidden'))btn.click()}}
+    function tickClock(){const d=new Date();qs('#adminClock').textContent=d.toLocaleDateString('nl-NL',{weekday:'long',day:'2-digit',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'})}
+    tickClock();setInterval(tickClock,30000);
+    if(state.token)start();
+  </script>
+</body>
+</html>
